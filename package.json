@@ -1,0 +1,22 @@
+{
+  "name": "ws-frame",
+  "version": "0.0.1-dev",
+  "description": "An easy using library to manage websocket.",
+  "main": "ws-frame.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toshiya14/ws-frame.git"
+  },
+  "author": "Akaishi Toshiya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/toshiya14/ws-frame/issues"
+  },
+  "homepage": "https://github.com/toshiya14/ws-frame#readme"
+}
