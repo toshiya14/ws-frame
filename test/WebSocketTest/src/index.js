@@ -1,4 +1,4 @@
-import wsframe from "../../../ws-frame";
+import wsframe from "ws-frame";
 
 const urlParams = new URLSearchParams(window.location.search);
 const uid = urlParams.get("uid") || "2";
@@ -6,10 +6,6 @@ const uid = urlParams.get("uid") || "2";
 var wsc = new wsframe({
   server: "ws://127.0.0.1:6089/test",
   debugLog: true,
-  reconnect: true,
-  sendPing: true,
-  sendPingPeriod: 30000,
-  reconnectDelay: 5000
 });
 
 wsc.on("connected", (e) => {

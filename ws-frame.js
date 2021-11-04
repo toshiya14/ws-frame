@@ -14,7 +14,6 @@ const CON_STATE_TIMEOUT = "timeout";
 const CON_STATE_CONNECTED = "connected";
 const CON_STATE_NOTCONNECT = "not-connect";
 const CON_STATE_RECONNECTING = "reconnecting";
-const CON_STATE_RECONNECTED = "reconnected";
 const LNE_STATE_ONLINE = "online";
 const LNE_STATE_OFFLINE = "offline";
 const TYPE_FUNCTION = "function";
@@ -48,6 +47,12 @@ export default function (options) {
   };
   this.$evt = new EventHandler();
 
+  /**
+   * (PRIVATE) if `$options.debugLog` set to `true`, output an stage log.
+   *
+   * @param {string} stage  the name of the stage.
+   * @param {Array<string>} data  extra data to output in this stage. each item is a line of text.
+   */
   let debugStageLog = (stage, data) => {
     if (this.$options.debugLog) {
       console.info(" ***** DEBUG LOG | STAGE : [" + stage + "] *****");
@@ -60,6 +65,9 @@ export default function (options) {
     }
   };
 
+  /**
+   * The task to send ping looply.
+   */
   let sendPingTask = () => {
     // If there is a planned task, clear it.
     if (ton_SendPingTask) {
@@ -78,10 +86,16 @@ export default function (options) {
     ton_SendPingTask = setTimeout(sendPingTask, this.$options.sendPingPeriod);
   };
 
+  /**
+   * Stop the task of sending ping.
+   */
   let stopSendPing = () => {
     clearTimeout(ton_SendPingTask);
   };
 
+  /**
+   * checking the connection is healthy with lastPingTime and lastPongTime.
+   */
   let connectionCheckingTask = () => {
     if (!this.$options.sendPing) {
       return; // if not send ping, do not check connection delay.
@@ -121,6 +135,9 @@ export default function (options) {
     setTimeout(connectionCheckingTask, 2500);
   };
 
+  /**
+   * Reconnect websocket.
+   */
   let onWebSocketReconnect = () => {
     // if a reconnect task is scheduled, skip.
     if (ton_Reconnect != null) {
@@ -145,6 +162,9 @@ export default function (options) {
     ton_Reconnect = setTimeout(initWebSocket, this.$options.reconnectDelay);
   };
 
+  /**
+   * The initialization of websocket.
+   */
   let initWebSocket = () => {
     // clear timeout
     if (ton_Reconnect) {
@@ -208,8 +228,6 @@ export default function (options) {
             // clear the connection timeout counter.
             clearTimeout(ton_ConnectionTimeout);
 
-            console.log("opened and state", this.$props.connectState, this.$props.inited);
-
             // The first time to connect to the server.
             if (!this.$props.inited) {
               this.$props.connectState = CON_STATE_CONNECTED;
@@ -254,7 +272,6 @@ export default function (options) {
 
             // The connection is not closed manually.
             if (!manuallyClose) {
-
               // should reconnect automatically.
               if (this.$options.reconnect) {
                 // Performs a delayed reconnection.
@@ -304,14 +321,13 @@ export default function (options) {
             }
 
             // Raise received event.
-            this.$evt.fire(EVT_RECEIVED, { payload: payload, $event: evt });
+            this.$evt.fire(EVT_RECEIVED, { payload: payload, wsc: this.$wsc });
           };
 
           // Bind event to `error` for `WebSocketClient`.
           this.$wsc.onerror = (evt) => {
             console.error(" *** WebSocket failed to open. ***");
             console.error("     ", evt);
-            console.log("error and state", this.$props.connectState);
             if (this.$props.connectState === "connected") {
               // `lost` event would be triggered.
               this.$evt.fire(EVT_LOST, {
@@ -333,15 +349,38 @@ export default function (options) {
     }
   };
 
+  /**
+   * open a websocket.
+   * @param {*} options  the options used for initializing websocket connection.
+   */
   this.open = initWebSocket;
+
+  /**
+   * close the websocket manually.
+   */
   this.close = () => {
     if (this.$wsc.readyState === 1) {
       manuallyClose = true;
       this.$wsc.close();
     }
   };
+
+  /**
+   * bind events to the websocket connection.
+   */
   this.on = this.$evt.on;
+
+  /**
+   * unbind events to the websocket connection.
+   */
   this.off = this.$evt.off;
+
+  /**
+   * send message to the server.
+   * 
+   * @param {string | ArrayBufferLike | Blob | ArrayBufferView} payload  the message sent to the server.
+   * @param {function} failedCallback  if the message sent failed, call the failedCallback.
+   */
   this.send = (payload, failedCallback) => {
     if (this.$wsc.readyState === 1) {
       this.$wsc.send(payload);
