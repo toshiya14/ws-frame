@@ -31,7 +31,8 @@ export default function () {
 
   let _dispatchEvent = (evtname, data) => {
     if (_handlers && _handlers[evtname]) {
-      for (h of _handlers[evtname]) {
+      for (let hi in _handlers[evtname]) {
+        let h = _handlers[evtname][hi];
         if (h && h.callback && typeof h.callback === "function") {
           h.callback.call(this, data);
         }

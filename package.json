@@ -1,11 +1,9 @@
 {
   "name": "ws-frame",
-  "version": "0.0.1-dev",
+  "version": "0.1.1",
   "description": "An easy using library to manage websocket.",
   "main": "ws-frame.js",
-  "directories": {
-    "doc": "doc"
-  },
+  "files": ["ws-frame.js", "events.js"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
