@@ -2,9 +2,26 @@
 
 `ws-frame` 其实就是把之前我自己写了一个可以自动处理重连的`WebSocket`操作流程单独提取出来的一个库。当然，目前还在开发测试阶段，可能不太稳定就是。
 
+
+
+## 文件结构
+
+* `doc` - 这个项目的文档。
+
+* `test` - 一个用于测试的项目。
+
+  * `test/TestWebSocketServer` - 一个使用.NET 5.0开发的控制台应用程序。
+  * `test/WebSocketTest` - 一个基于webpack的前端项目，用于启动一个测试的客户端。
+
+  如何使用测试项目：
+
+  1. 打开`test/TestWebSocketServer`中项目并运行。
+  2. 使用一个命令行打开文件夹`test/WebSocketTest`，然后运行`yarn dev`。
+  3. 打开浏览器，并打开页面`http://localhost:3300?uid={n}`，`{n}`可以是`1`,`2`,`3`。
+  4. 测试`request-response`：在页面中的文本框中输入一些文本，然后点击`submit`按钮。然后下面的表格里面就会出现`200`和`you said: <你刚刚输入的文本>`。
+  5. 测试 `server-push`：当你打开这个页面之后，web-socket会自动连接到服务器然后开始接受服务器传输过来的信息。没经过一段时间，服务器会主动发送`The current time is: <the time>`到所有的客户端。
+
 ## 开始使用
-
-
 
 ### 安装 ws-frame
 
@@ -12,6 +29,7 @@
 
 ```bash
 npm install ws-frame
+yarn add ws-frame
 ```
 
 将`ws-frame`加入到你的项目中。
@@ -24,7 +42,7 @@ npm install ws-frame
 
 ### 引入 ws-frame
 
-在你的项目最开始的位置，添加
+在你需要引入这个库的js文件中，添加
 
 ```javascript
 import wsframe from "ws-frame";

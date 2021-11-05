@@ -5,9 +5,26 @@
 
 
 
+## Files and folders
+
+* `doc` - The documents for this project.
+
+* `test` - The test example.
+
+  * `test/TestWebSocketServer` - A .NET 5.0 console application for starting a testing server.
+  * `test/WebSocketTest` - A webpack based front-end project for starting a testing client.
+
+  Test project usage:
+
+  1. Open and start up `test/TestWebSocketServer`.
+  2. Open a console and navigate to `test/WebSocketTest`, then run `yarn dev`.
+  3. Open a browser and navigate to `http://localhost:3300?uid={n}`, `{n}` could be `1`,`2`,`3`.
+  4. Test `request-response`: Enter a message to the text-box on the page. and click `submit` button. Then the table below would show `200` and `you said: <the message you submitted>`.
+  5. Test `server-push`: After you open the browser and navigate to the page, the web-socket would be connected to the server and begin to receive messages from the server. The server would automatically send a message `The current time is: <the time>` to the clients every 30s.
+
+
+
 ## Get started
-
-
 
 ### Install ws-frame
 
@@ -108,5 +125,5 @@ You could read some information about the currently using `wsframe` object from 
 
 ### The diagram
 
-<img src="README-images/WebSocketWorkflow.svg" />
+<img src="doc/WebSocketWorkflow.svg" />
 
